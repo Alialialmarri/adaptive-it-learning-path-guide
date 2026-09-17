@@ -8,6 +8,7 @@ export interface ModuleProgress {
   status: 'locked' | 'in_progress' | 'completed';
   completion_percentage: number;
   completed_lesson_ids: number[];
+  diagnostic_completed_lesson_ids: number[];
   last_accessed: string | null;
 }
 

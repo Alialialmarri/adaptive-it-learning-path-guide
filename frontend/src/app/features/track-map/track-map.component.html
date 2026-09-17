@@ -9,6 +9,19 @@
     <p class="error-text">{{ error }}</p>
   }
 
+  @if (showDiagnosticBanner) {
+    <div class="diagnostic-banner">
+      <div class="diagnostic-banner-text">
+        <strong>Not sure where to start?</strong>
+        <span>Take a quick diagnostic and we'll skip what you already know.</span>
+      </div>
+      <div class="diagnostic-banner-actions">
+        <button class="diagnostic-btn" (click)="goToDiagnostic()">Take the diagnostic</button>
+        <button class="diagnostic-dismiss" (click)="dismissDiagnosticBanner()">Dismiss</button>
+      </div>
+    </div>
+  }
+
   @if (!loading && !error) {
     <div class="module-list">
       @for (module of modules; track module.id) {

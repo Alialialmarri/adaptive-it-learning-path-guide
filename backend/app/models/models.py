@@ -81,9 +81,91 @@ class LessonProgress(Base):
     lesson_id = Column(Integer, ForeignKey("lessons.id"))
     completed = Column(Boolean, default=False)
     completed_at = Column(DateTime(timezone=True), nullable=True)
+    # "manual" | "diagnostic" | null (legacy rows predating the diagnostic
+    # feature). See specs/001-diagnostic-assessment/research.md #3 for why
+    # this is a column rather than a new status enum value.
+    completion_source = Column(String, nullable=True)
 
     user = relationship("User", back_populates="lesson_progress")
     lesson = relationship("Lesson", back_populates="lesson_progress")
+
+class DiagnosticQuestion(Base):
+    """A single diagnostic question, tagged to the topic (Lesson) it assesses.
+
+    Reuses `Lesson` as the topic unit instead of a separate `Topic` table —
+    see specs/001-diagnostic-assessment/spec.md #2.
+    """
+    __tablename__ = "diagnostic_questions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=False)
+    prompt = Column(Text, nullable=False)
+    question_type = Column(String, default="single_choice")  # single_choice | multi_choice
+    choices = Column(Text, nullable=False)  # JSON-encoded list[str]
+    correct_choices = Column(Text, nullable=False)  # JSON-encoded list[int] (indices into choices)
+    points = Column(Integer, default=1, nullable=False)
+
+    lesson = relationship("Lesson")
+
+
+class DiagnosticAttempt(Base):
+    """One diagnostic-taking event. `module_id` is null for a track-wide
+    diagnostic (FR-D1) and set for a module-scoped one (FR-D9)."""
+    __tablename__ = "diagnostic_attempts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    track_id = Column(Integer, ForeignKey("tracks.id"), nullable=False)
+    module_id = Column(Integer, ForeignKey("modules.id"), nullable=True)
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    submitted_at = Column(DateTime(timezone=True), nullable=True)
+
+    user = relationship("User")
+    track = relationship("Track")
+    module = relationship("Module")
+    answers = relationship("DiagnosticAnswer", back_populates="attempt", cascade="all, delete-orphan")
+
+
+class DiagnosticAnswer(Base):
+    """One answer within an attempt, graded at submission time."""
+    __tablename__ = "diagnostic_answers"
+    __table_args__ = (UniqueConstraint("attempt_id", "question_id", name="uq_attempt_question"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    attempt_id = Column(Integer, ForeignKey("diagnostic_attempts.id"), nullable=False)
+    question_id = Column(Integer, ForeignKey("diagnostic_questions.id"), nullable=False)
+    selected_choices = Column(Text, nullable=False)  # JSON-encoded list[int]
+    points_earned = Column(Integer, default=0, nullable=False)
+
+    attempt = relationship("DiagnosticAttempt", back_populates="answers")
+    question = relationship("DiagnosticQuestion")
+
+
+class MasteryBand(str, enum.Enum):
+    MASTERED = "mastered"
+    PARTIALLY_MASTERED = "partially_mastered"
+    NEEDS_LEARNING = "needs_learning"
+
+
+class TopicMastery(Base):
+    """Current derived mastery per (user, lesson) — the read model the
+    recommendation logic and progress-skip logic query. Upserted whenever a
+    new diagnostic attempt is submitted for that lesson (see
+    diagnostic_service.apply_mastery_to_progress)."""
+    __tablename__ = "topic_mastery"
+    __table_args__ = (UniqueConstraint("user_id", "lesson_id", name="uq_user_lesson_mastery"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=False)
+    score = Column(Integer, nullable=False)  # 0-100
+    band = Column(String, nullable=False)  # MasteryBand value
+    source_attempt_id = Column(Integer, ForeignKey("diagnostic_attempts.id"), nullable=False)
+    computed_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User")
+    lesson = relationship("Lesson")
+
 
 class ChatMessage(Base):
     __tablename__ = "chat_messages"

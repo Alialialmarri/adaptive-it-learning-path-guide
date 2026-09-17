@@ -7,6 +7,13 @@ export interface AuthUser {
   username: string;
 }
 
+export interface UserProfile {
+  id: number;
+  username: string;
+  email: string;
+  created_at: string | null;
+}
+
 interface TokenResponse {
   access_token: string;
   token_type: string;
@@ -41,6 +48,10 @@ export class AuthService {
   getUser(): AuthUser | null {
     const raw = localStorage.getItem(this.userKey);
     return raw ? (JSON.parse(raw) as AuthUser) : null;
+  }
+
+  getCurrentUser(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${environment.apiUrl}/auth/me`);
   }
 
   isAuthenticated(): boolean {

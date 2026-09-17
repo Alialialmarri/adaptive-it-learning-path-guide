@@ -15,6 +15,10 @@ import { ChatInterfaceComponent } from './features/chat/chat-interface.component
 import { ModuleViewComponent } from './features/module-view/module-view.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { ErrorPageComponent } from './features/error-page/error-page.component';
+import { DiagnosticAssessmentComponent } from './features/diagnostic/diagnostic-assessment.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { HeaderComponent } from './shared/header/header.component';
+import { FooterComponent } from './shared/footer/footer.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -25,7 +29,11 @@ import { ErrorPageComponent } from './features/error-page/error-page.component';
         ChatInterfaceComponent,
         ModuleViewComponent,
         NotFoundComponent,
-        ErrorPageComponent
+        ErrorPageComponent,
+        DiagnosticAssessmentComponent,
+        ProfileComponent,
+        HeaderComponent,
+        FooterComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,

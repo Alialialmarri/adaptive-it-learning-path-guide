@@ -34,7 +34,12 @@
                 [class.active]="lesson.id === selectedLesson?.id"
                 (click)="selectLesson(lesson)">
                 <span class="lesson-order">{{ lesson.order }}</span>
-                <span class="lesson-title">{{ lesson.title }}</span>
+                <span class="lesson-title" [title]="lesson.title">{{ lesson.title }}</span>
+                @if (isDiagnosticSkipped(lesson)) {
+                  <span class="diagnostic-tag" title="Marked complete because the diagnostic assessment showed you'd already mastered this topic.">
+                    auto
+                  </span>
+                }
                 <button class="lesson-done" (click)="toggleLessonCompleted(lesson, $event)" [class.done]="isLessonCompleted(lesson)">
                   {{ isLessonCompleted(lesson) ? '✓' : '○' }}
                 </button>

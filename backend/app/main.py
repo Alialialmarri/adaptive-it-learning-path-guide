@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, text
 from .db.database import SessionLocal, engine, Base
 from .models import models
 from .schemas import schemas
@@ -9,9 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from .services.rag_service import RAGService, RAGNotConfiguredError
 from .core.security import hash_password, verify_password, create_access_token, get_current_user
+from .routers import diagnostics as diagnostics_router
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timezone
+import json
 import os
 import threading
 
@@ -20,7 +22,26 @@ load_dotenv()
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
+
+def _ensure_lesson_progress_columns() -> None:
+    """`create_all` only creates missing tables, it never alters existing
+    ones — so on a pre-existing sql_app.db from before this feature,
+    `lesson_progress` exists but lacks `completion_source`. No migration
+    tool is set up yet (see specs/001-diagnostic-assessment/plan.md #2.3),
+    so patch it the same lightweight, idempotent way seeding works here.
+    On a fresh database `create_all` already included the column, so this
+    is a no-op."""
+    with engine.connect() as conn:
+        columns = {row[1] for row in conn.execute(text("PRAGMA table_info(lesson_progress)")).fetchall()}
+        if "completion_source" not in columns:
+            conn.execute(text("ALTER TABLE lesson_progress ADD COLUMN completion_source TEXT"))
+            conn.commit()
+
+
+_ensure_lesson_progress_columns()
+
 app = FastAPI()
+app.include_router(diagnostics_router.router, prefix="/api")
 
 # Initialize RAG Service
 # Use 'data' directory for raw files and 'chroma_db' for vector store
@@ -137,6 +158,40 @@ def _seed_module(db: Session, track: models.Track, module_spec: dict) -> None:
     print(f"Seeded lessons for '{module_spec['title']}'.")
 
 
+def _seed_diagnostic_questions(db: Session) -> None:
+    """Idempotently upsert the diagnostic question bank from seed_data.py,
+    matched by lesson title (NFR-D2: authored the same way module/lesson
+    content is)."""
+    for lesson_title, questions in seed_data.DIAGNOSTIC_QUESTIONS.items():
+        lesson = db.query(models.Lesson).filter(models.Lesson.title == lesson_title).first()
+        if lesson is None:
+            continue
+
+        desired_prompts = {q["prompt"] for q in questions}
+        existing = db.query(models.DiagnosticQuestion).filter(
+            models.DiagnosticQuestion.lesson_id == lesson.id
+        ).all()
+        for q in existing:
+            if q.prompt not in desired_prompts:
+                db.delete(q)
+
+        existing_prompts = {q.prompt for q in existing if q.prompt in desired_prompts}
+        for q in questions:
+            if q["prompt"] in existing_prompts:
+                continue
+            db.add(models.DiagnosticQuestion(
+                lesson_id=lesson.id,
+                prompt=q["prompt"],
+                question_type=q.get("question_type", "single_choice"),
+                choices=json.dumps(q["choices"]),
+                correct_choices=json.dumps(q["correct_choices"]),
+                points=q.get("points", 1),
+            ))
+
+    db.commit()
+    print("Seeded diagnostic questions.")
+
+
 def _index_content_in_background():
     """Runs off the startup critical path: indexing calls the Gemini embeddings
     API once per module/lesson, which can be slow or unreachable, and must not
@@ -166,6 +221,7 @@ def startup_event():
             _seed_module(db, track, module_spec)
 
         deduplicate_lessons(db)
+        _seed_diagnostic_questions(db)
     finally:
         db.close()
 
@@ -257,16 +313,23 @@ def _build_module_progress(db: Session, user_id: int, module_id: int) -> schemas
 
     lesson_ids = [l.id for l in module.lessons]
     completed_ids = []
+    diagnostic_completed_ids = []
     if lesson_ids:
-        completed_ids = [
-            row.lesson_id
-            for row in db.query(models.LessonProgress)
+        completed_rows = (
+            db.query(models.LessonProgress)
             .filter(
                 models.LessonProgress.user_id == user_id,
                 models.LessonProgress.lesson_id.in_(lesson_ids),
                 models.LessonProgress.completed == True,  # noqa: E712
             )
             .all()
+        )
+        completed_ids = [row.lesson_id for row in completed_rows]
+        # FR-D12: lessons auto-completed via the diagnostic are flagged
+        # separately so the frontend can badge them distinctly from lessons
+        # the student actually studied and checked off themselves.
+        diagnostic_completed_ids = [
+            row.lesson_id for row in completed_rows if row.completion_source == "diagnostic"
         ]
 
     progress = (
@@ -283,6 +346,7 @@ def _build_module_progress(db: Session, user_id: int, module_id: int) -> schemas
         status=status,
         completion_percentage=percentage,
         completed_lesson_ids=completed_ids,
+        diagnostic_completed_lesson_ids=diagnostic_completed_ids,
         last_accessed=last_accessed,
     )
 
@@ -341,11 +405,15 @@ def set_lesson_completion(
             lesson_id=lesson_id,
             completed=update.completed,
             completed_at=now if update.completed else None,
+            completion_source="manual" if update.completed else None,
         )
         db.add(row)
     else:
         row.completed = update.completed
         row.completed_at = now if update.completed else None
+        # An explicit manual toggle always wins, including flipping a
+        # diagnostic-completed lesson back to "manual" or to incomplete.
+        row.completion_source = "manual" if update.completed else None
     db.commit()
 
     module_id = lesson.module_id

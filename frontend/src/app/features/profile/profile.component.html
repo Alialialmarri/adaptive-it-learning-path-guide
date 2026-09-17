@@ -1,0 +1,85 @@
+<div class="profile-container">
+  @if (loading) {
+    <p class="loading-text">Loading your profile...</p>
+  }
+
+  @if (error) {
+    <p class="error-text">{{ error }}</p>
+  }
+
+  @if (!loading && !error && profile) {
+    <div class="profile-card">
+      <div class="avatar">{{ profile.username.charAt(0).toUpperCase() }}</div>
+      <div class="profile-identity">
+        <h2>{{ profile.username }}</h2>
+        <p>{{ profile.email }}</p>
+        @if (profile.created_at) {
+          <p class="member-since">Member since {{ profile.created_at | date: 'mediumDate' }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-tile">
+        <span class="stat-value">{{ overallPercent }}%</span>
+        <span class="stat-label">Overall progress</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">{{ modulesCompleted }} / {{ modules.length }}</span>
+        <span class="stat-label">Modules completed</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">{{ completedLessons }} / {{ totalLessons }}</span>
+        <span class="stat-label">Lessons completed</span>
+      </div>
+    </div>
+
+    <section class="section">
+      <h3>Progress by module</h3>
+      <div class="module-list">
+        @for (module of modules; track module.id) {
+          <div class="module-row">
+            <span class="module-name">{{ module.title }}</span>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" [style.width.%]="module.completionPercentage"></div>
+            </div>
+            <span class="module-percent">{{ module.completionPercentage }}%</span>
+            <span class="module-lessons">{{ module.completedLessons }}/{{ module.totalLessons }} lessons</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h3>Skills from your diagnostic</h3>
+        <a routerLink="/dashboard/diagnostic" class="retake-link">Take / retake diagnostic</a>
+      </div>
+
+      @if (mastery.length === 0) {
+        <p class="empty-note">
+          You haven't taken a diagnostic assessment yet. Take one to see a breakdown of what you
+          already know.
+        </p>
+      }
+
+      @if (mastery.length > 0) {
+        <div class="mastery-summary">
+          <span class="mastery-chip mastered">{{ masteryCount('mastered') }} mastered</span>
+          <span class="mastery-chip partially_mastered">{{ masteryCount('partially_mastered') }} partial</span>
+          <span class="mastery-chip needs_learning">{{ masteryCount('needs_learning') }} needs learning</span>
+        </div>
+        <div class="mastery-list">
+          @for (topic of mastery; track topic.lesson_id) {
+            <div class="mastery-row" [ngClass]="topic.band">
+              <span class="mastery-title">{{ topic.lesson_title }}</span>
+              <span class="mastery-module">{{ topic.module_title }}</span>
+              <span class="mastery-score">{{ topic.score }}%</span>
+              <span class="mastery-badge">{{ bandLabel(topic.band) }}</span>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+</div>

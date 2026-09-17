@@ -898,3 +898,115 @@ MODULES = [
         ],
     },
 ]
+
+
+# Diagnostic assessment question bank (specs/001-diagnostic-assessment).
+# Keyed by exact Lesson title so it's seeded/matched the same idempotent way
+# as module/lesson content (see app.main._seed_diagnostic_questions).
+# Each question is single-choice, worth 1 point; `correct_choices` holds the
+# index (or indices, for multi_choice) of the right answer(s) in `choices`.
+# v1 covers the first five "Python Programming" lessons, mirroring the
+# Basics -> Variables -> Conditionals -> Loops -> Functions example in
+# spec.md so the feature is demoable end-to-end.
+DIAGNOSTIC_QUESTIONS = {
+    "Introduction to Python": [
+        {
+            "prompt": "Which best describes Python as a language?",
+            "choices": [
+                "A markup language for web pages",
+                "A high-level, interpreted, general-purpose language",
+                "A low-level assembly language",
+                "A database query language",
+            ],
+            "correct_choices": [1],
+        },
+        {
+            "prompt": "What does Python use to define a block of code (instead of curly braces)?",
+            "choices": ["Semicolons", "The 'begin'/'end' keywords", "Curly braces {}", "Indentation"],
+            "correct_choices": [3],
+        },
+        {
+            "prompt": "Which symbol starts a single-line comment in Python?",
+            "choices": ["//", "#", "--", "<!--"],
+            "correct_choices": [1],
+        },
+    ],
+    "Variables and Data Types": [
+        {
+            "prompt": "Which statement about Python variables is true?",
+            "choices": [
+                "You must declare a variable's type before assigning a value",
+                "Variables cannot be reassigned to a different type",
+                "Python is dynamically typed, so you don't declare a variable's type",
+                "Variable names can start with a digit",
+            ],
+            "correct_choices": [2],
+        },
+        {
+            "prompt": "What does type(3.14) return?",
+            "choices": ["<class 'int'>", "<class 'str'>", "<class 'double'>", "<class 'float'>"],
+            "correct_choices": [3],
+        },
+        {
+            "prompt": "Which of these is a valid, conventional Python variable name?",
+            "choices": ["2fast", "student-age", "class", "student_age"],
+            "correct_choices": [3],
+        },
+    ],
+    "Operators and Expressions": [
+        {
+            "prompt": "What is the result of 7 // 3 in Python?",
+            "choices": ["2.33", "3", "2", "1"],
+            "correct_choices": [2],
+        },
+        {
+            "prompt": "What is the result of 7 % 3?",
+            "choices": ["0", "1", "2", "3"],
+            "correct_choices": [1],
+        },
+        {
+            "prompt": "Which operator returns True only when both operands are true?",
+            "choices": ["or", "not", "xor", "and"],
+            "correct_choices": [3],
+        },
+    ],
+    "Control Flow: Conditionals and Loops": [
+        {
+            "prompt": "Which keyword skips the rest of the current loop iteration and moves to the next one?",
+            "choices": ["break", "pass", "continue", "return"],
+            "correct_choices": [2],
+        },
+        {
+            "prompt": "What does this print?\nfor i in range(3):\n    print(i)",
+            "choices": ["1 2 3", "0 1 2", "0 1 2 3", "3 2 1"],
+            "correct_choices": [1],
+        },
+        {
+            "prompt": "Which keyword immediately exits a loop entirely?",
+            "choices": ["continue", "stop", "exit", "break"],
+            "correct_choices": [3],
+        },
+    ],
+    "Functions": [
+        {
+            "prompt": "Which keyword defines a function in Python?",
+            "choices": ["function", "func", "def", "lambda"],
+            "correct_choices": [2],
+        },
+        {
+            "prompt": "def power(base, exponent=2):\n    return base ** exponent\n\nWhat does power(3) return?",
+            "choices": ["3", "6", "Error: missing argument", "9"],
+            "correct_choices": [3],
+        },
+        {
+            "prompt": "What does *args let a function accept?",
+            "choices": [
+                "Exactly one argument only",
+                "A variable number of positional arguments",
+                "Keyword arguments only",
+                "No arguments at all",
+            ],
+            "correct_choices": [1],
+        },
+    ],
+}

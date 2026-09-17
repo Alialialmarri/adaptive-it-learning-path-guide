@@ -13,6 +13,7 @@ export interface Lesson {
 
 export interface Module {
   id: number;
+  track_id: number;
   title: string;
   content: string;
   order: number;

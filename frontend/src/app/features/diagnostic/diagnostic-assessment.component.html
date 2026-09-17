@@ -1,0 +1,103 @@
+<div class="diagnostic-container">
+  <a routerLink="/dashboard" class="back-to-dashboard">
+    <span aria-hidden="true">←</span> Learning Path
+  </a>
+
+  @if (state === 'loading') {
+    <p class="loading-text">Loading...</p>
+  }
+
+  @if (state === 'error') {
+    <p class="error-text">{{ error }}</p>
+    <button class="secondary-btn" (click)="goToDashboard()">Back to dashboard</button>
+  }
+
+  @if (state === 'intro') {
+    <div class="intro-card">
+      <h2>Not sure where to start?</h2>
+      <p>
+        Take a quick diagnostic assessment and we'll figure out which topics you already
+        know. Anything you've mastered is skipped automatically — you'll start exactly where
+        your learning actually needs to begin.
+      </p>
+      <div class="intro-actions">
+        <button class="primary-btn" (click)="startDiagnostic()">Take the diagnostic</button>
+        <button class="text-btn" (click)="skip()">Skip and start from the beginning</button>
+      </div>
+    </div>
+  }
+
+  @if (state === 'taking') {
+    <div class="taking-header">
+      <h2>Diagnostic Assessment</h2>
+      <p class="progress-note">{{ answeredCount }} of {{ totalQuestions }} answered</p>
+    </div>
+
+    @for (group of lessonGroups; track group.lessonId) {
+      <div class="lesson-group">
+        <h3>{{ group.lessonTitle }}</h3>
+        @for (question of group.questions; track question.id) {
+          <div class="question-card">
+            <p class="question-prompt">{{ question.prompt }}</p>
+            <div class="choice-list">
+              @for (choice of question.choices; track $index) {
+                <label class="choice" [class.selected]="isSelected(question, $index)">
+                  <input
+                    type="radio"
+                    [name]="'question-' + question.id"
+                    [checked]="isSelected(question, $index)"
+                    (change)="selectChoice(question, $index)" />
+                  <span>{{ choice }}</span>
+                </label>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="submit-bar">
+      <button class="text-btn" (click)="skip()">Skip and start from the beginning</button>
+      <button class="primary-btn" [disabled]="answeredCount === 0" (click)="submit()">
+        Submit diagnostic
+      </button>
+    </div>
+  }
+
+  @if (state === 'submitting') {
+    <p class="loading-text">Scoring your answers...</p>
+  }
+
+  @if (state === 'result' && result) {
+    <div class="result-card">
+      <h2>Here's what we found</h2>
+      <div class="mastery-list">
+        @for (topic of result.topic_mastery; track topic.lesson_id) {
+          <div class="mastery-row" [ngClass]="topic.band">
+            <span class="mastery-title">{{ topic.lesson_title }}</span>
+            <span class="mastery-score">{{ topic.score }}%</span>
+            <span class="mastery-badge">{{ bandLabel(topic.band) }}</span>
+          </div>
+        }
+      </div>
+
+      @if (result.auto_completed_lesson_ids.length > 0) {
+        <p class="skip-note">
+          {{ result.auto_completed_lesson_ids.length }}
+          {{ result.auto_completed_lesson_ids.length === 1 ? 'topic has' : 'topics have' }}
+          been marked complete — you can still reopen them any time.
+        </p>
+      }
+
+      @if (result.recommended_start_lesson_title) {
+        <div class="recommendation">
+          <p>We recommend starting with:</p>
+          <h3>{{ result.recommended_start_lesson_title }}</h3>
+          <button class="primary-btn" (click)="goToRecommendedLesson()">Start here</button>
+        </div>
+      }
+
+      <button class="text-btn" (click)="goToDashboard()">Back to dashboard</button>
+    </div>
+  }
+</div>

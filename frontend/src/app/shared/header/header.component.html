@@ -1,0 +1,21 @@
+<header class="site-header">
+  <a class="brand" [routerLink]="isAuthenticated ? '/dashboard' : '/login'">
+    <img src="img/lu-logo.webp" alt="Lusail University" class="lu-logo" />
+    <span class="brand-title">Adaptive IT Learning Path Guide</span>
+  </a>
+
+  <nav class="site-nav">
+    @if (isAuthenticated) {
+      <a routerLink="/dashboard" routerLinkActive="active">Learning Path</a>
+      <a routerLink="/profile" routerLinkActive="active">My Profile</a>
+      @if (user) {
+        <span class="nav-username">{{ user.username }}</span>
+      }
+      <button class="logout-btn" (click)="logout()">Log out</button>
+    }
+    @if (!isAuthenticated) {
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    }
+  </nav>
+</header>

@@ -23,6 +23,7 @@ export class ModuleViewComponent implements OnInit {
   maxChatWidth = 800;
   isResizing = false;
   completedLessonIds = new Set<number>();
+  diagnosticCompletedLessonIds = new Set<number>();
 
   constructor(
     private route: ActivatedRoute,
@@ -73,6 +74,10 @@ export class ModuleViewComponent implements OnInit {
     return this.completedLessonIds.has(lesson.id);
   }
 
+  isDiagnosticSkipped(lesson: Lesson): boolean {
+    return this.diagnosticCompletedLessonIds.has(lesson.id);
+  }
+
   toggleLessonCompleted(lesson: Lesson, event?: MouseEvent): void {
     if (event) {
       event.stopPropagation();
@@ -85,6 +90,9 @@ export class ModuleViewComponent implements OnInit {
     } else {
       this.completedLessonIds.delete(lesson.id);
     }
+    // A manual toggle (in either direction) always supersedes a diagnostic
+    // skip, matching the backend's completion_source="manual" overwrite.
+    this.diagnosticCompletedLessonIds.delete(lesson.id);
 
     this.progressService.setLessonCompletion(lesson.id, nowCompleted).subscribe({
       error: (err) => {
@@ -115,6 +123,7 @@ export class ModuleViewComponent implements OnInit {
     this.progressService.openModule(moduleId).subscribe({
       next: (progress) => {
         this.completedLessonIds = new Set(progress.completed_lesson_ids);
+        this.diagnosticCompletedLessonIds = new Set(progress.diagnostic_completed_lesson_ids);
       },
       error: (err) => {
         console.error('Failed to load module progress:', err);

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ModuleService, Module as ApiModule } from '../../core/module.service';
 import { ProgressService, ModuleProgress } from '../../core/progress.service';
+import { DiagnosticService } from '../../core/diagnostic.service';
 
 interface TrackModule {
   id: number;
@@ -23,10 +24,16 @@ export class TrackMapComponent implements OnInit {
   loading = true;
   error = '';
 
+  trackId: number | null = null;
+  // null = not checked yet; false = never taken; true = already taken.
+  diagnosticTaken: boolean | null = null;
+  diagnosticDismissed = false;
+
   constructor(
     private router: Router,
     private moduleService: ModuleService,
-    private progressService: ProgressService
+    private progressService: ProgressService,
+    private diagnosticService: DiagnosticService
   ) { }
 
   ngOnInit(): void {
@@ -48,12 +55,32 @@ export class TrackMapComponent implements OnInit {
           };
         });
         this.loading = false;
+
+        if (modules.length > 0) {
+          this.trackId = modules[0].track_id;
+          this.diagnosticService.getTrackStatus(this.trackId).subscribe({
+            next: (status) => (this.diagnosticTaken = status !== null),
+            error: () => (this.diagnosticTaken = null),
+          });
+        }
       },
       error: () => {
         this.error = 'Could not load your learning path. Please try again.';
         this.loading = false;
       },
     });
+  }
+
+  get showDiagnosticBanner(): boolean {
+    return !this.loading && !this.error && this.diagnosticTaken === false && !this.diagnosticDismissed;
+  }
+
+  dismissDiagnosticBanner(): void {
+    this.diagnosticDismissed = true;
+  }
+
+  goToDiagnostic(): void {
+    this.router.navigate(['/dashboard/diagnostic']);
   }
 
   selectModule(module: TrackModule) {
