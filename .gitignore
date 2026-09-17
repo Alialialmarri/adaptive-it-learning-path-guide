@@ -7,10 +7,6 @@ backend/venv/
 __pycache__/
 *.pyc
 
-# Environment / secrets
-.env
-backend/.env
-
 # Databases / generated data
 sql_app.db
 backend/sql_app.db
