@@ -1,3 +1,11 @@
+# Secrets: never commit environment files (API keys, JWT secret)
+.env
+.env.*
+*.env
+backend/.env
+!.env.example
+!backend/.env.example
+
 # Dependencies
 node_modules/
 frontend/node_modules/
@@ -31,3 +39,6 @@ dist/
 .DS_Store
 .vscode/
 .claude/
+
+# RAG evaluation scratch vector stores
+backend/eval_chroma*/

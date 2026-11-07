@@ -1,4 +1,3 @@
-import os
 from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException, status
@@ -9,8 +8,10 @@ from sqlalchemy.orm import Session
 
 from ..db.database import get_db
 from ..models import models
+from .config import JWT_SECRET_KEY
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-change-me")
+# No default value: config.py refuses to start without a strong secret.
+SECRET_KEY = JWT_SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 

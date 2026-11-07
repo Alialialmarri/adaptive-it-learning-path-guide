@@ -154,9 +154,6 @@ embedding model, similarity method, prompt) is in [RAG Pipeline](#rag-pipeline) 
 
 ### Planned / Not Yet Implemented
 
-- **Authorization on `/api/modules/*`** — these content endpoints are still open to
-  unauthenticated requests (`/api/chat`, `/api/chat/history*`, `/api/progress/*`, `/api/auth/me`,
-  and all diagnostic endpoints already require a valid JWT via `get_current_user`).
 - **RAGAS-based accuracy evaluation** of AI tutor answers (planned per the project report,
   Section 9.4).
 - **Configurable mastery thresholds** — the 80/60 diagnostic cutoffs are a constant in
@@ -339,7 +336,7 @@ Open `http://localhost:4200`.
 
 ### Environment Variables
 
-Create `backend/.env` with:
+Copy `backend/.env.example` to `backend/.env` (the file is ignored by Git and must never be committed) and set:
 
 ```env
 GOOGLE_API_KEY=your-google-ai-studio-key
@@ -349,7 +346,7 @@ JWT_SECRET_KEY=a-long-random-string
 | Variable          | Required | Purpose                                                            |
 | ----------------- | -------- | -------------------------------------------------------------------|
 | `GOOGLE_API_KEY`  | For chat | Gemini API key used for embeddings and chat completions.           |
-| `JWT_SECRET_KEY`  | Recommended | Signing key for login tokens. If omitted, an insecure development default is used — always set this for anything beyond local testing. |
+| `JWT_SECRET_KEY`  | Yes | Signing key for login tokens: a random value of at least 32 characters. There is no default; the backend refuses to start if it is missing or weak. |
 
 The setup scripts generate `JWT_SECRET_KEY` for you automatically; you only need to fill in
 `GOOGLE_API_KEY` by hand.

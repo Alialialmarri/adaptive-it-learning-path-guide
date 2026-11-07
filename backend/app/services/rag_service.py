@@ -29,7 +29,7 @@ class RAGNotConfiguredError(RuntimeError):
 
 
 class RAGService:
-    MODULE_SCOPE_RELEVANCE_THRESHOLD = 0.45
+    MODULE_SCOPE_RELEVANCE_THRESHOLD = 0.70
 
     def __init__(self, data_dir: str, persist_dir: str):
         self.data_dir = data_dir
@@ -59,7 +59,7 @@ class RAGService:
         if not self.has_api_key:
             raise RAGNotConfiguredError("GOOGLE_API_KEY is not set.")
         if self._llm is None:
-            self._llm = ChatGoogleGenerativeAI(model="gemini-flash-latest", temperature=0.7)
+            self._llm = ChatGoogleGenerativeAI(model=os.getenv("GEMINI_CHAT_MODEL", "gemini-flash-lite-latest"), temperature=0.7)
         return self._llm
 
     def reset_vector_db(self):

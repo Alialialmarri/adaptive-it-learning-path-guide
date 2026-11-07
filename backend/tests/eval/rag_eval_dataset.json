@@ -1,0 +1,326 @@
+[
+  {
+    "id": "Q01",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "Why does indentation matter in Python?",
+    "reference_answer": "Python uses indentation instead of braces to define code blocks, so consistent spacing is required; 4 spaces is the standard.",
+    "source_lesson": "Introduction to Python",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q02",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "What is the difference between int, float and str in Python?",
+    "reference_answer": "int holds whole numbers such as 42, float holds decimal numbers such as 3.14, and str holds text and is immutable.",
+    "source_lesson": "Variables and Data Types",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q03",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "What does the // operator do?",
+    "reference_answer": "// is floor division: it divides and rounds down, so 7 // 3 gives 2.",
+    "source_lesson": "Operators and Expressions",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q04",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "What is the difference between break and continue in a loop?",
+    "reference_answer": "break stops the loop entirely, while continue skips to the next iteration of the loop.",
+    "source_lesson": "Control Flow: Conditionals and Loops",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q05",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "How do default arguments work in a Python function?",
+    "reference_answer": "A parameter can be given a default value in the definition, for example def power(base, exponent=2). Calling power(3) uses the default and returns 9, and the value can be overridden by position or by keyword.",
+    "source_lesson": "Functions",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q06",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "How are lists and tuples different?",
+    "reference_answer": "Lists are ordered and mutable, so items can be appended or changed. Tuples are ordered but immutable and can be unpacked.",
+    "source_lesson": "Core Data Structures: Lists, Tuples, Dicts, Sets",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q07",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "Why should I use the with statement when opening a file?",
+    "reference_answer": "The with statement is a context manager that automatically closes the file even if an error occurs, so resources do not leak.",
+    "source_lesson": "File Handling",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q08",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "How do I handle a division by zero error?",
+    "reference_answer": "Put the division inside a try block and catch ZeroDivisionError in an except block, for example printing a message.",
+    "source_lesson": "Error Handling with try/except",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q09",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "What does __init__ do in a class?",
+    "reference_answer": "__init__ is the constructor. It runs when an object is created, and self refers to the specific instance being initialised.",
+    "source_lesson": "Object-Oriented Programming: Classes and Objects",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q10",
+    "active_module": "Python Programming",
+    "category": "in_scope",
+    "question": "How do I create and activate a virtual environment?",
+    "reference_answer": "Run python -m venv venv, then activate it with source venv/bin/activate (or venv\\Scripts\\activate on Windows). Use one virtual environment per project so dependencies do not conflict.",
+    "source_lesson": "Modules, Packages, and pip",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q11",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is a data structure?",
+    "reference_answer": "A data structure is a way to store data so you can use it efficiently. The choice depends on the type of data, what you want to do with it (search, insert, delete, sort, traverse) and performance constraints such as speed and memory.",
+    "source_lesson": "Course Introduction",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q12",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is the time complexity of binary search and why?",
+    "reference_answer": "Binary search on a sorted array is O(log n), because the search space is divided at each step (divide-and-conquer), so the cost grows slowly with n.",
+    "source_lesson": "Big-O and Complexity",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q13",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "Why is inserting at the front of a dynamic array slow?",
+    "reference_answer": "Inserting or removing at the front is O(n) because all the other elements must be shifted.",
+    "source_lesson": "Arrays and Dynamic Arrays (ArrayList)",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q14",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "Why is getting an element by index O(n) in a linked list?",
+    "reference_answer": "A linked list has no direct access to the i-th node, so you must walk the list node by node from the head following the pointers.",
+    "source_lesson": "Linked Lists",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q15",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What does LIFO mean for a stack?",
+    "reference_answer": "LIFO means Last In, First Out: push adds an element on top and pop removes the top element, like a stack of plates.",
+    "source_lesson": "Stacks",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q16",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is the difference between a stack and a queue?",
+    "reference_answer": "A stack is LIFO (Last In, First Out) while a queue is FIFO (First In, First Out). A deque supports adding and removing at both ends.",
+    "source_lesson": "Stacks / Queues and Deques",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q17",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is a hash collision and how can it be handled?",
+    "reference_answer": "A collision happens when two keys map to the same bucket. Common strategies are chaining, where the bucket holds a list, and open addressing, where other slots are probed.",
+    "source_lesson": "Hash Tables (Maps/Sets)",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q18",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is the BST rule and what is the worst-case search time?",
+    "reference_answer": "In a binary search tree, values in the left subtree are smaller than the node and values in the right subtree are larger. Average search is O(log n) but the worst case is O(n) when the tree becomes skewed like a linked list.",
+    "source_lesson": "Trees (Binary Trees and BST)",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q19",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "What is the difference between BFS and DFS?",
+    "reference_answer": "BFS explores a graph layer by layer using a queue and is good for shortest paths in unweighted graphs. DFS explores deep paths first using a stack or recursion and is good for components, cycle detection and ordering problems.",
+    "source_lesson": "Graphs (BFS and DFS)",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q20",
+    "active_module": "Data Structures",
+    "category": "in_scope",
+    "question": "Why does sorting help searching?",
+    "reference_answer": "Sorting enables binary search, which is O(log n) instead of the O(n) of linear search, and it also makes duplicates easy to handle.",
+    "source_lesson": "Searching and Sorting Toolkit",
+    "expected_behaviour": "answer_from_module"
+  },
+  {
+    "id": "Q21",
+    "active_module": "Python Programming",
+    "category": "out_of_scope",
+    "question": "What is the difference between BFS and DFS in a graph?",
+    "reference_answer": "(belongs to the Data Structures module)",
+    "source_lesson": "Data Structures / Graphs (BFS and DFS)",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q22",
+    "active_module": "Python Programming",
+    "category": "out_of_scope",
+    "question": "What is the average time complexity of a hash table lookup?",
+    "reference_answer": "(belongs to the Data Structures module)",
+    "source_lesson": "Data Structures / Hash Tables",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q23",
+    "active_module": "Python Programming",
+    "category": "out_of_scope",
+    "question": "How does a binary search tree keep its values ordered?",
+    "reference_answer": "(belongs to the Data Structures module)",
+    "source_lesson": "Data Structures / Trees",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q24",
+    "active_module": "Python Programming",
+    "category": "out_of_scope",
+    "question": "Who won the FIFA World Cup in 2022?",
+    "reference_answer": "(unrelated to any module)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q25",
+    "active_module": "Python Programming",
+    "category": "out_of_scope",
+    "question": "What is a good recipe for chocolate cake?",
+    "reference_answer": "(unrelated to any module)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q26",
+    "active_module": "Data Structures",
+    "category": "out_of_scope",
+    "question": "How do I read a text file line by line using the with statement?",
+    "reference_answer": "(belongs to the Python Programming module)",
+    "source_lesson": "Python Programming / File Handling",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q27",
+    "active_module": "Data Structures",
+    "category": "out_of_scope",
+    "question": "What is the difference between try, except and finally?",
+    "reference_answer": "(belongs to the Python Programming module)",
+    "source_lesson": "Python Programming / Error Handling",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q28",
+    "active_module": "Data Structures",
+    "category": "out_of_scope",
+    "question": "What does the :.1f format specifier do inside an f-string?",
+    "reference_answer": "(belongs to the Python Programming module)",
+    "source_lesson": "Python Programming / Strings and String Methods",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q29",
+    "active_module": "Data Structures",
+    "category": "out_of_scope",
+    "question": "What is the capital of France?",
+    "reference_answer": "(unrelated to any module)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q30",
+    "active_module": "Data Structures",
+    "category": "out_of_scope",
+    "question": "Can you recommend a good movie to watch tonight?",
+    "reference_answer": "(unrelated to any module)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_to_active_module"
+  },
+  {
+    "id": "Q31",
+    "active_module": "Python Programming",
+    "category": "insufficient_information",
+    "question": "What are generators and how does the yield keyword work?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  },
+  {
+    "id": "Q32",
+    "active_module": "Python Programming",
+    "category": "insufficient_information",
+    "question": "How do decorators work in Python?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  },
+  {
+    "id": "Q33",
+    "active_module": "Python Programming",
+    "category": "insufficient_information",
+    "question": "What is the difference between multithreading and multiprocessing in Python?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  },
+  {
+    "id": "Q34",
+    "active_module": "Data Structures",
+    "category": "insufficient_information",
+    "question": "How does a red-black tree rebalance itself after an insertion?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  },
+  {
+    "id": "Q35",
+    "active_module": "Data Structures",
+    "category": "insufficient_information",
+    "question": "What is the time complexity of Dijkstra's algorithm with a binary heap?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  },
+  {
+    "id": "Q36",
+    "active_module": "Data Structures",
+    "category": "insufficient_information",
+    "question": "How does a Bloom filter work?",
+    "reference_answer": "(not covered by the module material)",
+    "source_lesson": "none",
+    "expected_behaviour": "redirect_or_state_not_covered"
+  }
+]

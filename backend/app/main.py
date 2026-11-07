@@ -1,3 +1,6 @@
+# Load backend/.env and validate the settings before anything else reads them.
+from .core import config  # noqa: F401  (must stay the first application import)
+
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
@@ -6,7 +9,6 @@ from .models import models
 from .schemas import schemas
 from . import seed_data
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 from .services.rag_service import RAGService, RAGNotConfiguredError
 from .core.security import hash_password, verify_password, create_access_token, get_current_user
 from .routers import diagnostics as diagnostics_router
@@ -14,10 +16,11 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timezone
 import json
+import logging
 import os
 import threading
 
-load_dotenv()
+logger = logging.getLogger("app")
 
 # Create tables
 models.Base.metadata.create_all(bind=engine)
@@ -267,20 +270,22 @@ def read_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 
+# The module endpoints require a logged-in user. All pages that use them are
+# behind the login guard of the frontend, so the content is not needed anonymously.
 @app.get("/api/modules", response_model=List[schemas.Module])
-def list_modules(db: Session = Depends(get_db)):
+def list_modules(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     return db.query(models.Module).order_by(models.Module.order).all()
 
 
 @app.get("/api/modules/{module_id}", response_model=schemas.Module)
-def read_module(module_id: int, db: Session = Depends(get_db)):
+def read_module(module_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     db_module = db.query(models.Module).filter(models.Module.id == module_id).first()
     if db_module is None:
         raise HTTPException(status_code=404, detail="Module not found")
     return db_module
 
 @app.get("/api/modules/title/{title}", response_model=schemas.Module)
-def read_module_by_title(title: str, db: Session = Depends(get_db)):
+def read_module_by_title(title: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     db_module = db.query(models.Module).filter(models.Module.title == title).first()
     if db_module is None:
         raise HTTPException(status_code=404, detail="Module not found")
@@ -499,14 +504,18 @@ def chat_endpoint(
     try:
         response = rag_service.query_rag(request.message, request.context, module_id=module_id)
     except RAGNotConfiguredError as e:
-        print(f"Chat unavailable: {e}")
+        logger.warning("Chat unavailable: %s", e)
         raise HTTPException(
             status_code=503,
             detail="The AI tutor is not configured yet. Set GOOGLE_API_KEY in backend/.env and restart the backend.",
         )
-    except Exception as e:
-        print(f"Error in chat endpoint: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        # Full details go to the server log only; the client gets a generic message.
+        logger.exception("Chat request failed (user_id=%s, module_id=%s)", current_user.id, module_id)
+        raise HTTPException(
+            status_code=500,
+            detail="The AI tutor could not answer right now. Please try again later.",
+        )
 
     # FR-10 Chat History Storage
     db.add(models.ChatMessage(user_id=current_user.id, module_id=module_id, role="user", content=request.message))

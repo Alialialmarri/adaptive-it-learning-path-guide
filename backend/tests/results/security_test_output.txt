@@ -1,0 +1,73 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\QAF.DESKTOP-1MT9AUB\AppData\Local\Programs\Python\Python310\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Download\project_full\adaptive-it-learning-path-guide-main\backend
+plugins: anyio-4.12.1
+collecting ... collected 9 items
+
+tests/test_security.py::test_S01_secret_is_loaded_from_env_file_before_use PASSED [ 11%]
+tests/test_security.py::test_S02_startup_fails_without_secret PASSED     [ 22%]
+tests/test_security.py::test_S03_startup_fails_with_weak_or_placeholder_secret[dev-secret-change-me] PASSED [ 33%]
+tests/test_security.py::test_S03_startup_fails_with_weak_or_placeholder_secret[a-long-random-string] PASSED [ 44%]
+tests/test_security.py::test_S03_startup_fails_with_weak_or_placeholder_secret[short-secret] PASSED [ 55%]
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server PASSED [ 66%]
+tests/test_security.py::test_S05_gitignore_excludes_env_files PASSED     [ 77%]
+tests/test_security.py::test_S06_no_google_api_key_in_frontend_source PASSED [ 88%]
+tests/test_security.py::test_S07_module_endpoints_reject_anonymous_requests PASSED [100%]
+
+============================== warnings summary ===============================
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\db\database.py:12: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\schemas\schemas.py:17: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class UserOut(BaseModel):
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\schemas\schemas.py:39: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Lesson(LessonBase):
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\schemas\schemas.py:55: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Module(ModuleBase):
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\schemas\schemas.py:68: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ModuleProgressOut(BaseModel):
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\schemas\schemas.py:95: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ChatHistorySummaryOut(BaseModel):
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  C:\Users\QAF.DESKTOP-1MT9AUB\AppData\Local\Programs\Python\Python310\lib\site-packages\langchain_google_genai\chat_models.py:52: FutureWarning: 
+  
+  All support for the `google.generativeai` package has ended. It will no longer be receiving 
+  updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+  See README for more details:
+  
+  https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+  
+    from google.generativeai.types import Tool as GoogleTool  # type: ignore[import]
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  D:\Download\project_full\adaptive-it-learning-path-guide-main\backend\app\main.py:212: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+tests/test_security.py::test_S04_chat_error_is_generic_and_logged_on_server
+  C:\Users\QAF.DESKTOP-1MT9AUB\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py:4599: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 9 passed, 9 warnings in 8.30s ========================
