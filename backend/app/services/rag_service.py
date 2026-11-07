@@ -29,7 +29,10 @@ class RAGNotConfiguredError(RuntimeError):
 
 
 class RAGService:
-    MODULE_SCOPE_RELEVANCE_THRESHOLD = 0.70
+    # Minimum relevance of the best matching chunk for a question to count as in-scope.
+    # Short on-topic questions (e.g. "What is a variable in Python?") score below 0.70, so the
+    # default is 0.45; override with RAG_RELEVANCE_THRESHOLD in backend/.env.
+    MODULE_SCOPE_RELEVANCE_THRESHOLD = float(os.getenv("RAG_RELEVANCE_THRESHOLD", "0.45"))
 
     def __init__(self, data_dir: str, persist_dir: str):
         self.data_dir = data_dir
